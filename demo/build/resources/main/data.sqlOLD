@@ -1,0 +1,34 @@
+INSERT INTO persona (
+    nombre,
+    genero,
+    edad,
+    identificacion,
+    direccion,
+    telefono
+) VALUES
+( 'Juan Pérez', 'M', 35, '0102030405', 'Av. Amazonas', '0991234567');
+
+INSERT INTO persona (
+    nombre,
+    genero,
+    edad,
+    identificacion,
+    direccion,
+    telefono
+) VALUES
+( 'María López', 'F', 28, '0912345678', 'Av. 10 de Agosto', '0987654321');
+
+
+INSERT INTO cliente (
+    cliente_id,
+    contrasena,
+    estado
+) VALUES
+( 'CLI-001', '1234', TRUE);
+
+INSERT INTO cliente (
+    cliente_id,
+    contrasena,
+    estado
+) VALUES
+( 'CLI-002', 'abcd', TRUE);
