@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>Lista de Clientes</h1>
+  
+  <div *ngIf="isLoading" class="loading">Cargando clientes...</div>
+  
+  <div *ngIf="error" class="error">
+    {{ error }}
+    <button (click)="loadClientes()" class="retry-button">Reintentar</button>
+  </div>
+
+  <div *ngIf="!isLoading && !error">
+    <div *ngIf="clientes.length === 0" class="no-clients">
+      No se encontraron clientes.
+    </div>
+
+    <div *ngIf="clientes.length > 0" class="clientes-grid">
+      <div *ngFor="let cliente of clientes" class="cliente-card">
+        <h3>{{ cliente.nombre }}</h3>
+        <div class="cliente-details">
+          <p><strong>ID:</strong> {{ cliente.id }}</p>
+          <p><strong>Identificación:</strong> {{ cliente.identificacion }}</p>
+          <p><strong>Edad:</strong> {{ cliente.edad }} años</p>
+          <p><strong>Género:</strong> {{ cliente.genero === 'M' ? 'Masculino' : 'Femenino' }}</p>
+          <p><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+          <p><strong>Dirección:</strong> {{ cliente.direccion }}</p>
+          <p><strong>Estado:</strong> {{ cliente.estado ? 'Activo' : 'Inactivo' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
