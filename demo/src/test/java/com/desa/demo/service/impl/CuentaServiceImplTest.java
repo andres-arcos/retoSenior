@@ -53,28 +53,28 @@ class CuentaServiceImplTest {
         cuenta.setNumeroCuenta("1234567890");
         cuenta.setSaldo(1000.0);
         cuenta.setCliente(cliente);
-
     }
 
     @Test
-    void crearCuenta_WhenNumeroCuentaExists_ShouldThrowException() {
+    void crearCuentaCuandoNumeroCuentaExisteDebeLanzarExcepcion() {
         when(cuentaRepository.existsByNumeroCuenta(anyString())).thenReturn(true);
 
         assertThrows(CuentaException.class, () -> cuentaService.crearCuenta(cuentaDto));
         verify(cuentaRepository, never()).save(any(Cuenta.class));
     }
 
-
     @Test
-    void obtenerCuentaPorNumero_WhenNotExists_ShouldThrowException() {
+    void obtenerCuentaPorNumeroCuandoNoExisteDebeLanzarExcepcion() {
         when(cuentaRepository.findByNumeroCuenta(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(CuentaException.class, 
-            () -> cuentaService.obtenerCuentaPorNumero("9999999999"));
+        assertThrows(
+            CuentaException.class,
+            () -> cuentaService.obtenerCuentaPorNumero("9999999999")
+        );
     }
 
     @Test
-    void eliminarCuenta_WhenExists_ShouldDeleteCuenta() {
+    void eliminarCuentaCuandoExisteDebeEliminarCuenta() {
         when(cuentaRepository.findByNumeroCuenta(anyString())).thenReturn(Optional.of(cuenta));
         doNothing().when(cuentaRepository).delete(any(Cuenta.class));
 
@@ -83,7 +83,7 @@ class CuentaServiceImplTest {
     }
 
     @Test
-    void obtenerCuentasPorCliente_ShouldReturnCuentas() {
+    void obtenerCuentasPorClienteDebeRetornarListaDeCuentas() {
         List<Cuenta> cuentas = List.of(cuenta);
         when(cuentaRepository.findByClienteId(anyLong())).thenReturn(cuentas);
 
@@ -93,4 +93,5 @@ class CuentaServiceImplTest {
         assertEquals(1, result.size());
         verify(cuentaRepository, times(1)).findByClienteId(1L);
     }
+
 }
