@@ -1,0 +1,113 @@
+<div class="container">
+  <div class="header">
+    <h1>Lista de Clientes</h1>
+    <button (click)="toggleCreateForm()" class="create-button" [disabled]="isLoading">
+      {{ showCreateForm ? 'Cancelar' : 'Crear Cliente' }}
+    </button>
+  </div>
+  
+  <div *ngIf="isLoading" class="loading">Cargando clientes...</div>
+  
+  <div *ngIf="error" class="error">
+    {{ error }}
+    <button (click)="loadClientes()" class="retry-button">Reintentar</button>
+  </div>
+
+  <!-- Formulario de creación de cliente -->
+  <div *ngIf="showCreateForm" class="create-form-container">
+    <h2>Nuevo Cliente</h2>
+    <form (ngSubmit)="onSubmit()" #clientForm="ngForm" class="client-form">
+      <div class="form-group">
+        <label for="nombre">Nombre Completo *</label>
+        <input type="text" id="nombre" name="nombre" [(ngModel)]="newCliente.nombre" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="identificacion">Identificación *</label>
+          <input type="text" id="identificacion" name="identificacion" [(ngModel)]="newCliente.identificacion" required>
+        </div>
+
+        <div class="form-group">
+          <label for="clienteId">ID de Cliente *</label>
+          <input type="text" id="clienteId" name="clienteId" [(ngModel)]="newCliente.clienteId" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="edad">Edad *</label>
+          <input type="number" id="edad" name="edad" [(ngModel)]="newCliente.edad" min="1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Género *</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="genero" [(ngModel)]="newCliente.genero" value="M" required> Masculino
+            </label>
+            <label>
+              <input type="radio" name="genero" [(ngModel)]="newCliente.genero" value="F" required> Femenino
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="direccion">Dirección *</label>
+        <input type="text" id="direccion" name="direccion" [(ngModel)]="newCliente.direccion" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="telefono">Teléfono *</label>
+          <input type="tel" id="telefono" name="telefono" [(ngModel)]="newCliente.telefono" required>
+        </div>
+
+        <div class="form-group">
+          <label for="contrasena">Contraseña *</label>
+          <input type="password" id="contrasena" name="contrasena" [(ngModel)]="newCliente.contrasena" required>
+        </div>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" id="estado" name="estado" [(ngModel)]="newCliente.estado">
+          Cliente Activo
+        </label>
+      </div>
+
+      <div *ngIf="formError" class="form-error">
+        {{ formError }}
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="toggleCreateForm()" [disabled]="isSubmitting">Cancelar</button>
+        <button type="submit" [disabled]="!clientForm.form.valid || isSubmitting">
+          {{ isSubmitting ? 'Guardando...' : 'Guardar Cliente' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="!isLoading && !error">
+    <div *ngIf="clientes.length === 0" class="no-clients">
+      No se encontraron clientes.
+    </div>
+
+    <div *ngIf="clientes.length > 0" class="clientes-grid">
+      <div *ngFor="let cliente of clientes" class="cliente-card">
+        <h3>{{ cliente.nombre }}</h3>
+        <div class="cliente-details">
+          <p><strong>ID:</strong> {{ cliente.id }}</p>
+          <p><strong>Identificación:</strong> {{ cliente.identificacion }}</p>
+          <p><strong>Edad:</strong> {{ cliente.edad }} años</p>
+          <p><strong>Género:</strong> {{ cliente.genero === 'M' ? 'Masculino' : 'Femenino' }}</p>
+          <p><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+          <p><strong>Dirección:</strong> {{ cliente.direccion }}</p>
+          <p><strong>Estado:</strong> {{ cliente.estado ? 'Activo' : 'Inactivo' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
