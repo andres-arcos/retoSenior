@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -54,33 +55,34 @@ class MovimientoServiceImplTest {
         movimiento.setSaldo(BigDecimal.valueOf(1500));
         movimiento.setFecha(LocalDateTime.now());
         movimiento.setCuenta(cuenta);
-
-     
     }
 
-
     @Test
-    void obtenerMovimientoPorId_WhenNotExists_ShouldThrowException() {
+    void obtenerMovimientoPorIdCuandoNoExisteDebeLanzarExcepcion() {
         when(movimientoRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(MovimientoException.class, 
-            () -> movimientoService.obtenerMovimientoPorId(999L));
+        assertThrows(
+            MovimientoException.class,
+            () -> movimientoService.obtenerMovimientoPorId(999L)
+        );
     }
 
     @Test
-    void obtenerMovimientosPorCuenta_ShouldReturnMovimientos() {
+    void obtenerMovimientosPorCuentaDebeRetornarListaDeMovimientos() {
         List<Movimiento> movimientos = List.of(movimiento);
         when(movimientoRepository.findByNumeroCuenta(anyString())).thenReturn(movimientos);
 
-        List<Movimiento> result = movimientoService.obtenerMovimientosPorCuenta("1234567890");
+        List<Movimiento> result =
+            movimientoService.obtenerMovimientosPorCuenta("1234567890");
 
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
-        verify(movimientoRepository, times(1)).findByNumeroCuenta("1234567890");
+        verify(movimientoRepository, times(1))
+            .findByNumeroCuenta("1234567890");
     }
 
     @Test
-    void eliminarMovimiento_WhenExists_ShouldDeleteMovimiento() {
+    void eliminarMovimientoCuandoExisteDebeEliminarMovimiento() {
         when(movimientoRepository.existsById(anyLong())).thenReturn(true);
         doNothing().when(movimientoRepository).deleteById(anyLong());
 
@@ -89,21 +91,27 @@ class MovimientoServiceImplTest {
     }
 
     @Test
-    void eliminarMovimiento_WhenNotExists_ShouldThrowException() {
+    void eliminarMovimientoCuandoNoExisteDebeLanzarExcepcion() {
         when(movimientoRepository.existsById(anyLong())).thenReturn(false);
 
-        assertThrows(MovimientoException.class, 
-            () -> movimientoService.eliminarMovimiento(999L));
+        assertThrows(
+            MovimientoException.class,
+            () -> movimientoService.eliminarMovimiento(999L)
+        );
         verify(movimientoRepository, never()).deleteById(anyLong());
     }
 
     @Test
-    void obtenerSaldoActual_WhenNoMovements_ShouldReturnZero() {
-        when(movimientoRepository.findFirstByCuentaNumeroCuentaOrderByFechaDesc(anyString()))
-            .thenReturn(Optional.empty());
+    void obtenerSaldoActualCuandoNoHayMovimientosDebeRetornarCero() {
+        when(
+            movimientoRepository
+                .findFirstByCuentaNumeroCuentaOrderByFechaDesc(anyString())
+        ).thenReturn(Optional.empty());
 
-        BigDecimal saldo = movimientoService.obtenerSaldoActual("1234567890");
+        BigDecimal saldo =
+            movimientoService.obtenerSaldoActual("1234567890");
 
         assertEquals(BigDecimal.ZERO, saldo);
     }
+
 }
